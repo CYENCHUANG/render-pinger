@@ -1,0 +1,12 @@
+name: Scheduled Ping
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # 每 10 分鐘執行一次（最短可設為 5 分鐘）
+
+jobs:
+  ping-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render App
+        run: curl -s https://linebot-openai-kysy.onrender.com/ping
