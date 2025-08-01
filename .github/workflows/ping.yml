@@ -2,13 +2,29 @@ name: Scheduled Ping
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # 每 10 分鐘執行一次（最短可設為 5 分鐘）
+    - cron: '*/10 * * * *'  # 每 10 分鐘執行一次
 
 jobs:
   ping-job:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Render App
-    run: |
-      date
-      curl -s https://linebot-openai-kysy.onrender.com/ping
+        run: |
+          echo "=== Ping Started at $(date) ==="
+
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" https://linebot-openai-kysy.onrender.com/ping)
+
+          # 分離回應內容與 HTTP 狀態碼
+          BODY=$(echo "$RESPONSE" | sed '$d')
+          STATUS_CODE=$(echo "$RESPONSE" | tail -n1 | cut -d':' -f2)
+
+          echo "🔄 Response Body:"
+          echo "$BODY"
+          echo "🌐 HTTP Status Code: $STATUS_CODE"
+
+          if [ "$STATUS_CODE" -eq 200 ]; then
+            echo "✅ Ping successful."
+          else
+            echo "❌ Ping failed. Status code: $STATUS_CODE"
+            echo "Timestamp: $(date)"
+          fi
