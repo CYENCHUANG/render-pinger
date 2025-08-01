@@ -2,7 +2,7 @@ name: Scheduled Ping
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # 每 10 分鐘執行一次
+    - cron: '*/8 * * * *'  # 每 10 分鐘執行一次
 
 jobs:
   ping-job:
